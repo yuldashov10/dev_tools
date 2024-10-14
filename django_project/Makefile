@@ -8,6 +8,9 @@ dj-migrate:
 dj-run:
 	python manage.py runserver
 
+dj-collect:
+	python manage.py collectstatic
+
 # Commands for working with a virtual environment
 venv310:
 	python3.10 -m venv .venv

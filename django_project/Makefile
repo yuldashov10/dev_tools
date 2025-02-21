@@ -1,44 +1,53 @@
-# Django Commands
-dj-migrations:
-	python manage.py makemigrations
+DJANGO_MANAGE = python manage.py
 
-dj-migrate:
-	python manage.py migrate
+# Django Commands
+dj-make:
+	$(DJANGO_MANAGE) makemigrations
+
+dj-mig:
+	$(DJANGO_MANAGE) migrate
 
 dj-run:
-	python manage.py runserver
+	$(DJANGO_MANAGE) runserver
 
 dj-collect:
-	python manage.py collectstatic
+	$(DJANGO_MANAGE) collectstatic
+
+dj-suser:
+	$(DJANGO_MANAGE) createsuperuser
 
 # Commands for working with a virtual environment
-venv310:
-	python3.10 -m venv .venv
-	@echo "Virtual environment created for Python 3.10"
+venv:
+	@if [ -z "$(version)" ]; then \
+		echo "Usage: make venv version=<python_version>"; \
+		exit 1; \
+	fi
+	python$(version) -m venv .venv
+	@echo "Virtual environment created for Python $(version)"
 
-venv39:
-	python3.9 -m venv .venv
-	@echo "Virtual environment created for Python 3.9"
+# Poetry commands
+poetry-extra-plugins:
+	poetry self add poetry-plugin-shell poetry-plugin-export
 
-# Installing dependencies
-install:
-	poetry install
-
-shell:
-	poetry shell
+poetry-start:
+	poetry shell poetry install
 
 # Linting and formatting
-format:
+dev-pep8:
 	black .
 	isort .
 
-lint:
+dev-lint:
 	flake8 .
 	mypy .
 
-# Running tests
-test:
-	pytest
+dev-full:
+	dev-format dev-lint
 
-# Full check (formatting, linting, tests)
-check: format lint test
+# Other utils
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf .mypy_cache
+	rm -rf .pytest_cache
+	@echo "Cleaned up temporary files."

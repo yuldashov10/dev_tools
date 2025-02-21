@@ -12,7 +12,7 @@ poetry-extra-plugins:
 	poetry self add poetry-plugin-shell poetry-plugin-export
 
 poetry-start:
-	poetry shell poetry install
+	poetry shell
 
 # Linting and formatting
 dev-pep8:

@@ -1,5 +1,24 @@
 DJANGO_MANAGE = python manage.py
 
+# Docker commands
+dc-up:
+	sudo docker compose up -d
+
+dc-up-build:
+	sudo docker compose up --build -d
+
+dc-down:
+	sudo docker compose down
+
+dc-down-rm:
+	sudo docker compose down -v
+
+dc-rebuild:
+	dc-down && dc-up-build
+
+dc-rm-nones:
+	docker rmi $(docker images -f "dangling=true" -q)
+
 # Django Commands
 dj-make:
 	$(DJANGO_MANAGE) makemigrations
@@ -42,12 +61,18 @@ dev-lint:
 	mypy .
 
 dev-full:
-	dev-format dev-lint
+	make dev-pep8
+	make dev-lint
 
 # Other utils
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
+	find . -type f -name "*.DS_Store" -delete
 	rm -rf .mypy_cache
 	rm -rf .pytest_cache
 	@echo "Cleaned up temporary files."
+
+project_tree:
+	tree -a -I ".venv|.git|.vscode|.idea|node_modules|migrations|admin|.mypy_cache|__pycache__|htmlcov"

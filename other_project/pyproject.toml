@@ -25,13 +25,12 @@ faker = "^28.0.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-
 [tool.flake8]
 max-line-length = 79
 max-complexity = 6
 count = true
 per-file-ignores = [
-    "__init__.py:F401",
+    "__init__.py:F401,F403",
     "**/settings.py:E501"
 ]
 extend-ignore = [
@@ -59,14 +58,20 @@ exclude = [
 
 [tool.black]
 line-length = 79
+target-version = ['py311']
 include = '\.pyi?$'
-extend-exclude = '''
+exclude = '''
 /(
-    migrations
+    \.git
   | __pycache__
-  | .pytest_cache
-  | .vscode
-  | .idea
+  | \.pytest_cache
+  | \.vscode
+  | \.idea
+  | venv
+  | env
+  | \.venv
+  | \.env
+  | migrations
 )/
 '''
 
@@ -78,5 +83,23 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 known_local_folder = [
-
+    "yourFolder",
 ]
+
+[tool.mypy]
+python_version = ">=3.11"
+warn_return_any = true
+warn_unused_configs = true
+disable_error_code = ["import-untyped"]
+exclude = [
+    "^settings\\.py$",
+    '*\.pyi$',
+    '**/.venv/',
+    '**/venv/',
+    '**/.env/',
+    '**/env/',
+]
+
+[[tool.mypy.overrides]]
+module = ["untyped_package.*"]
+follow_untyped_imports = true
